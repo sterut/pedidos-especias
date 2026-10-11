@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Pedidos — Especias Decor</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Hanken+Grotesque:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="wrap">
+  <header class="hero">
+    <div class="marca">ESPECIAS DECOR</div>
+    <h1>Hacé tu pedido.</h1>
+    <p class="intro">Elegí lo que quieras de la lista y mandalo por WhatsApp.</p>
+    <div class="datos">
+      <div><span>PEDIDOS A</span><strong>Laura Stehli</strong></div>
+      <div><span>WHATSAPP</span><strong>387 527 4250</strong></div>
+    </div>
+    <div class="pasos">
+      <div><b>01</b>Sumás lo que quieras</div>
+      <div><b>02</b>Ves el total al momento</div>
+      <div><b>03</b>Lo mandás por WhatsApp</div>
+    </div>
+  </header>
+
+  <nav class="tabs" id="tabs"></nav>
+  <main id="lista"></main>
+
+  <p class="nota">Precios sujetos a la lista vigente. Los productos sueltos se pueden pedir en 100 g, 1/4 kg, 1/2 kg o 1 kg. Elegí la presentación y sumá con el +.<br>¿Sos preventista? <a href="pedidos-preventistas.html">Entrá acá</a>.</p>
+</div>
+
+<div class="barra vacia" id="barra">
+  <div class="wrap">
+    <div class="tot">
+      <small id="cuenta">0 productos</small>
+      <strong id="total">$0</strong>
+      <button id="vaciar">Vaciar pedido</button>
+    </div>
+    <a id="pedir" href="#" target="_blank" rel="noopener">Pedir</a>
+  </div>
+</div>
+
+<script src="productos.js"></script>
+<script>
+/* ===== LÓGICA (no hace falta tocar) ===== */
+const carrito = {};      // clave "indice|presentacion" → cantidad
+const elegida = {};      // indice → presentación seleccionada
+const $ = id => document.getElementById(id);
+
+function render(){
+  const cats = [...new Set(PRODUCTOS.map(p => p.categoria))];
+  $('tabs').innerHTML = cats.map(c => `<a href="#${slug(c)}">${c}</a>`).join('');
+  $('lista').innerHTML = cats.map(c => `
+    <h2 id="${slug(c)}">${c}</h2>
+    ${PRODUCTOS.map((p,i) => {
+      if (p.categoria !== c) return '';
+      if (porKilo(p)) elegida[i] = '1kg';
+      return `
+      <div class="item" id="item-${i}">
+        <div class="qty">
+          <button onclick="cambiar(${i},-1)" aria-label="Quitar">−</button>
+          <span id="q-${i}">0</span>
+          <button onclick="cambiar(${i},1)" aria-label="Agregar">+</button>
+        </div>
+        <div class="info">
+          <strong>${p.nombre}</strong>
+          ${detalle(p) ? `<small>${detalle(p)}</small>` : ''}
+          ${porKilo(p) ? `<div class="chips" id="chips-${i}">${PRESENTACIONES.map(x =>
+            `<button class="chip${x.id === '1kg' ? ' on' : ''}" data-p="${x.id}" onclick="elegir(${i},'${x.id}')">${x.etiqueta}</button>`).join('')}</div>
+            <div class="sumado" id="sum-${i}"></div>` : ''}
+        </div>
+        <div class="precio" id="pr-${i}">${plata(precioDe(i, elegida[i]))}</div>
+      </div>`;
+    }).join('')}
+  `).join('');
+}
+
+function clave(i){ return i + '|' + (elegida[i] || ''); }
+
+function elegir(i, presId){
+  elegida[i] = presId;
+  document.querySelectorAll(`#chips-${i} .chip`).forEach(b => b.classList.toggle('on', b.dataset.p === presId));
+  $('pr-' + i).textContent = plata(precioDe(i, presId));
+  $('q-' + i).textContent = carrito[clave(i)] || 0;
+}
+
+function cambiar(i, d){
+  const k = clave(i);
+  carrito[k] = Math.max(0, (carrito[k] || 0) + d);
+  if (!carrito[k]) delete carrito[k];
+  pintarItem(i);
+  actualizar();
+}
+
+function pintarItem(i){
+  $('q-' + i).textContent = carrito[clave(i)] || 0;
+  const delItem = Object.keys(carrito).filter(k => k.split('|')[0] == i);
+  $('item-' + i).classList.toggle('activo', delItem.length > 0);
+  const s = $('sum-' + i);
+  if (s) s.textContent = delItem.length
+    ? 'En el pedido: ' + delItem.map(k => carrito[k] + ' x ' + etiquetaDe(i, k.split('|')[1])).join(' · ')
+    : '';
+}
+
+function actualizar(){
+  const ks = Object.keys(carrito);
+  const cant = ks.reduce((a,k) => a + carrito[k], 0);
+  const total = ks.reduce((a,k) => { const [i,pr] = k.split('|'); return a + carrito[k] * precioDe(+i, pr); }, 0);
+  $('cuenta').textContent = cant + (cant === 1 ? ' producto' : ' productos');
+  $('total').textContent = plata(total);
+  $('barra').classList.toggle('vacia', cant === 0);
+
+  const lineas = ks.map(k => {
+    const [i,pr] = k.split('|');
+    return `• ${carrito[k]} x ${PRODUCTOS[i].nombre} (${etiquetaDe(+i, pr)}) — ${plata(carrito[k] * precioDe(+i, pr))}`;
+  }).join('\n');
+  const msg = `*Pedido Especias Decor*\n\nHola ${VENDEDORA.nombre}, quiero hacer este pedido:\n\n${lineas}\n\n*Total: ${plata(total)}*\n\nGracias.`;
+  $('pedir').href = `https://wa.me/${VENDEDORA.whatsapp}?text=${encodeURIComponent(msg)}`;
+}
+
+$('vaciar').onclick = () => {
+  const items = new Set(Object.keys(carrito).map(k => k.split('|')[0]));
+  Object.keys(carrito).forEach(k => delete carrito[k]);
+  items.forEach(i => pintarItem(+i));
+  actualizar();
+};
+
+render(); actualizar();
+</script>
+</body>
+</html>
