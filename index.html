@@ -3,131 +3,134 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="robots" content="noindex, nofollow">
-<title>Pedidos — Especias Decor</title>
+<title>Molinos Decor | Especias con molienda propia — Salta</title>
+<meta name="description" content="Molinos Decor: especias y condimentos con molienda propia en Salta Capital desde 1992. Mayorista y minorista, distribución a todo el país.">
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Hanken+Grotesque:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<div class="wrap">
-  <header class="hero">
-    <div class="marca">ESPECIAS DECOR</div>
-    <h1>Hacé tu pedido.</h1>
-    <p class="intro">Elegí lo que quieras de la lista y mandalo por WhatsApp.</p>
-    <div class="datos">
-      <div><span>PEDIDOS A</span><strong>Laura Stehli</strong></div>
-      <div><span>WHATSAPP</span><strong>387 527 4250</strong></div>
-    </div>
-    <div class="pasos">
-      <div><b>01</b>Sumás lo que quieras</div>
-      <div><b>02</b>Ves el total al momento</div>
-      <div><b>03</b>Lo mandás por WhatsApp</div>
-    </div>
-  </header>
 
-  <nav class="tabs" id="tabs"></nav>
-  <main id="lista"></main>
-
-  <p class="nota">Precios sujetos a la lista vigente. Los productos sueltos se pueden pedir en 100 g, 1/4 kg, 1/2 kg o 1 kg. Elegí la presentación y sumá con el +.<br>¿Sos preventista? <a href="pedidos-preventistas.html">Entrá acá</a>.</p>
-</div>
-
-<div class="barra vacia" id="barra">
-  <div class="wrap">
-    <div class="tot">
-      <small id="cuenta">0 productos</small>
-      <strong id="total">$0</strong>
-      <button id="vaciar">Vaciar pedido</button>
-    </div>
-    <a id="pedir" href="#" target="_blank" rel="noopener">Pedir</a>
+<header class="l-header">
+  <div class="l-wrap">
+    <a class="l-brand" href="#"><span>MOLINOS</span> DECOR</a>
+    <nav class="l-nav">
+      <a href="#diferencial">Nosotros</a>
+      <a href="#productos">Productos</a>
+      <a href="#contacto">Contacto</a>
+      <a class="btn-wsp" href="https://wa.me/5493875274250?text=Hola%2C%20quiero%20conocer%20m%C3%A1s%20sobre%20Molinos%20Decor" target="_blank" rel="noopener">WhatsApp</a>
+    </nav>
   </div>
-</div>
+</header>
 
-<script src="productos.js"></script>
-<script>
-/* ===== LÓGICA (no hace falta tocar) ===== */
-const carrito = {};      // clave "indice|presentacion" → cantidad
-const elegida = {};      // indice → presentación seleccionada
-const $ = id => document.getElementById(id);
+<section class="l-hero" style="background-image:url('images/producto-bolsa.jpg')">
+  <div class="l-wrap">
+    <div class="eyebrow">Molienda propia · Salta Capital · Desde 1992</div>
+    <h1>Especias que no<br>cambian con los años.</h1>
+    <p>Producimos y molemos nuestras propias especias en Salta Capital. Abastecemos a mayoristas, carnicerías y comercios de todo el país — del gramo al kilo.</p>
+    <div class="cta-row">
+      <a class="btn btn-primary" href="catalogo.html">Hacer un pedido</a>
+      <a class="btn btn-outline" href="https://wa.me/5493875274250?text=Hola%2C%20quiero%20consultar%20por%20Molinos%20Decor" target="_blank" rel="noopener">Consultar por WhatsApp</a>
+    </div>
+  </div>
+</section>
 
-function render(){
-  const cats = [...new Set(PRODUCTOS.map(p => p.categoria))];
-  $('tabs').innerHTML = cats.map(c => `<a href="#${slug(c)}">${c}</a>`).join('');
-  $('lista').innerHTML = cats.map(c => `
-    <h2 id="${slug(c)}">${c}</h2>
-    ${PRODUCTOS.map((p,i) => {
-      if (p.categoria !== c) return '';
-      if (porKilo(p)) elegida[i] = '1kg';
-      return `
-      <div class="item" id="item-${i}">
-        <div class="qty">
-          <button onclick="cambiar(${i},-1)" aria-label="Quitar">−</button>
-          <span id="q-${i}">0</span>
-          <button onclick="cambiar(${i},1)" aria-label="Agregar">+</button>
+<section class="section" id="diferencial">
+  <div class="l-wrap">
+    <div class="section-head">
+      <div class="eyebrow">Por qué Molinos Decor</div>
+      <h2>Más de 30 años moliendo el mismo sabor.</h2>
+      <p>Desde 1992 producimos especias y condimentos en Salta, con un proceso que controlamos de punta a punta.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="ico">🌾</div>
+        <h3>Molienda propia</h3>
+        <p>Controlamos todo el proceso de producción, del grano al molido final, sin intermediarios.</p>
+      </div>
+      <div class="feature-card">
+        <div class="ico">📅</div>
+        <h3>Desde 1992</h3>
+        <p>Más de 30 años en el rubro, con el mismo compromiso de calidad en cada partida.</p>
+      </div>
+      <div class="feature-card">
+        <div class="ico">⚖️</div>
+        <h3>Mayorista y minorista</h3>
+        <p>Vendemos del gramo al kilo: para comercios que compran volumen y para consumo particular.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section alt" id="productos">
+  <div class="l-wrap">
+    <div class="split">
+      <img src="images/estante.jpg" alt="Estantería con productos Molinos Decor: tomillo, romero, albahaca, jengibre y mix de semillas">
+      <div>
+        <div class="eyebrow">Lo que producimos</div>
+        <h2>Especias, frutos secos, semillas y más.</h2>
+        <p style="color:var(--muted);margin:0 0 24px">Condimentos molidos, frutos secos, semillas, hierbas y productos varios — todo con la misma calidad de siempre.</p>
+        <div class="cta-row">
+          <a class="btn btn-primary" href="catalogo.html">Ver catálogo completo</a>
         </div>
-        <div class="info">
-          <strong>${p.nombre}</strong>
-          ${detalle(p) ? `<small>${detalle(p)}</small>` : ''}
-          ${porKilo(p) ? `<div class="chips" id="chips-${i}">${PRESENTACIONES.map(x =>
-            `<button class="chip${x.id === '1kg' ? ' on' : ''}" data-p="${x.id}" onclick="elegir(${i},'${x.id}')">${x.etiqueta}</button>`).join('')}</div>
-            <div class="sumado" id="sum-${i}"></div>` : ''}
-        </div>
-        <div class="precio" id="pr-${i}">${plata(precioDe(i, elegida[i]))}</div>
-      </div>`;
-    }).join('')}
-  `).join('');
-}
+      </div>
+    </div>
+  </div>
+</section>
 
-function clave(i){ return i + '|' + (elegida[i] || ''); }
+<section class="section">
+  <div class="l-wrap">
+    <div class="section-head">
+      <div class="eyebrow">Para tu negocio</div>
+      <h2>¿A quién le vendemos?</h2>
+      <p>Trabajamos con comercios de todo el país, además de venta al público.</p>
+    </div>
+    <div class="segments-grid">
+      <div class="segment-card">
+        <h3>Mayoristas</h3>
+        <p>Volúmenes grandes, con distribución a todo el país.</p>
+      </div>
+      <div class="segment-card">
+        <h3>Carnicerías</h3>
+        <p>Condimentos para chorizo, hamburguesa, milanesa y morcilla.</p>
+      </div>
+      <div class="segment-card">
+        <h3>Público en general</h3>
+        <p>Venta minorista, del gramo al kilo, en Salta Capital.</p>
+      </div>
+    </div>
+  </div>
+</section>
 
-function elegir(i, presId){
-  elegida[i] = presId;
-  document.querySelectorAll(`#chips-${i} .chip`).forEach(b => b.classList.toggle('on', b.dataset.p === presId));
-  $('pr-' + i).textContent = plata(precioDe(i, presId));
-  $('q-' + i).textContent = carrito[clave(i)] || 0;
-}
+<section class="section alt" id="contacto">
+  <div class="l-wrap">
+    <div class="contact-box">
+      <h2>¿Querés hacer un pedido o consultar precios?</h2>
+      <p>Escribinos por WhatsApp o entrá directo al catálogo.</p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="https://wa.me/5493875274250?text=Hola%2C%20quiero%20hacer%20una%20consulta" target="_blank" rel="noopener">Escribinos por WhatsApp</a>
+        <a class="btn btn-outline" style="border-color:rgba(255,255,255,.5);color:#fff" href="catalogo.html">Ver catálogo</a>
+      </div>
+    </div>
+  </div>
+</section>
 
-function cambiar(i, d){
-  const k = clave(i);
-  carrito[k] = Math.max(0, (carrito[k] || 0) + d);
-  if (!carrito[k]) delete carrito[k];
-  pintarItem(i);
-  actualizar();
-}
+<footer class="l-footer">
+  <div class="l-wrap">
+    <div>
+      <h4>Molinos Decor</h4>
+      <p class="muted-sm">Especias y condimentos · Ayacucho 372, Salta Capital</p>
+    </div>
+    <nav>
+      <a href="catalogo.html">Hacer un pedido</a>
+      <a href="pedidos-preventistas.html">Acceso preventistas</a>
+      <a href="https://instagram.com/especias.decor" target="_blank" rel="noopener">Instagram @especias.decor</a>
+      <a href="https://wa.me/5493875274250" target="_blank" rel="noopener">WhatsApp</a>
+    </nav>
+  </div>
+  <div class="bottom">
+    <span>© 2026 Molinos Decor — Salta, Argentina</span>
+  </div>
+</footer>
 
-function pintarItem(i){
-  $('q-' + i).textContent = carrito[clave(i)] || 0;
-  const delItem = Object.keys(carrito).filter(k => k.split('|')[0] == i);
-  $('item-' + i).classList.toggle('activo', delItem.length > 0);
-  const s = $('sum-' + i);
-  if (s) s.textContent = delItem.length
-    ? 'En el pedido: ' + delItem.map(k => carrito[k] + ' x ' + etiquetaDe(i, k.split('|')[1])).join(' · ')
-    : '';
-}
-
-function actualizar(){
-  const ks = Object.keys(carrito);
-  const cant = ks.reduce((a,k) => a + carrito[k], 0);
-  const total = ks.reduce((a,k) => { const [i,pr] = k.split('|'); return a + carrito[k] * precioDe(+i, pr); }, 0);
-  $('cuenta').textContent = cant + (cant === 1 ? ' producto' : ' productos');
-  $('total').textContent = plata(total);
-  $('barra').classList.toggle('vacia', cant === 0);
-
-  const lineas = ks.map(k => {
-    const [i,pr] = k.split('|');
-    return `• ${carrito[k]} x ${PRODUCTOS[i].nombre} (${etiquetaDe(+i, pr)}) — ${plata(carrito[k] * precioDe(+i, pr))}`;
-  }).join('\n');
-  const msg = `*Pedido Especias Decor*\n\nHola ${VENDEDORA.nombre}, quiero hacer este pedido:\n\n${lineas}\n\n*Total: ${plata(total)}*\n\nGracias.`;
-  $('pedir').href = `https://wa.me/${VENDEDORA.whatsapp}?text=${encodeURIComponent(msg)}`;
-}
-
-$('vaciar').onclick = () => {
-  const items = new Set(Object.keys(carrito).map(k => k.split('|')[0]));
-  Object.keys(carrito).forEach(k => delete carrito[k]);
-  items.forEach(i => pintarItem(+i));
-  actualizar();
-};
-
-render(); actualizar();
-</script>
 </body>
 </html>
