@@ -4,7 +4,7 @@
 
 const VENDEDORA = {
   nombre: 'Enrique Stehli',
-  whatsapp: '5493985397525' // formato internacional: 54 9 + característica + número, sin espacios
+  whatsapp: '5493875397525' // formato internacional: 54 9 + característica + número, sin espacios
 };
 
 /* ===== PREVENTISTAS =====
