@@ -81,6 +81,8 @@ function render(){
           ${porKilo(p) ? `<div class="chips" id="chips-${i}">${PRESENTACIONES.map(x =>
             `<button class="chip${x.id === '1kg' ? ' on' : ''}" data-p="${x.id}" onclick="elegir(${i},'${x.id}')">${x.etiqueta}</button>`).join('')}</div>
             <div class="sumado" id="sum-${i}"></div>` : ''}
+          ${p.sabores ? `<details class="sabores"><summary>Ver sabores</summary><p>${p.sabores.join(', ')}</p></details>` : ''}
+          ${p.nota ? `<p class="nota-item">${p.nota}</p>` : ''}
         </div>
         <div class="precio" id="pr-${i}">${plata(precioDe(i, elegida[i]))}</div>
       </div>`;
