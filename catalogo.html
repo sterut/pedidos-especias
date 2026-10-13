@@ -51,13 +51,16 @@ const $ = id => document.getElementById(id);
 
 function render(){
   const cats = [...new Set(PRODUCTOS.map(p => p.categoria))];
-  $('tabs').innerHTML = cats.map(c => `<a href="#${slug(c)}">${c}</a>`).join('');
+  const tabLinks = cats.map(c => `<a href="#${slug(c)}">${c}</a>`);
+  tabLinks.splice(1, 0, '<a href="#tiras">Tiras de condimentos</a>');
+  $('tabs').innerHTML = tabLinks.join('');
   $('lista').innerHTML = cats.map(c => `
     <h2 id="${slug(c)}">${c}</h2>
     ${PRODUCTOS.map((p,i) => {
       if (p.categoria !== c) return '';
       if (porKilo(p)) elegida[i] = '1kg';
       return `
+      ${p.nombre === 'Tira de condimentos' ? '<div id="tiras" style="scroll-margin-top:60px"></div>' : ''}
       <div class="item" id="item-${i}">
         <div class="qty">
           <button onclick="cambiar(${i},-1)" aria-label="Quitar">−</button>
