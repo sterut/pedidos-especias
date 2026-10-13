@@ -119,6 +119,6 @@ h2{font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:800;font-s
 /* Logo e imagenes */
 .l-logo{height:64px;width:64px;border-radius:12px;display:block;object-fit:cover}
 .logo-hero{width:110px;height:110px;display:block;margin-bottom:16px;border-radius:14px;object-fit:cover}
-.duo{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.duo img{width:100%;height:420px;object-fit:cover;border-radius:16px;display:block}
-@media (max-width:760px){.duo img{height:240px}}
+.duo{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.duo img{width:100%;height:280px;object-fit:cover;border-radius:16px;display:block}
+@media (max-width:760px){.duo{grid-template-columns:1fr}.duo img{height:220px}}
