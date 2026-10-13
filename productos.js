@@ -3,8 +3,8 @@
    Si cambian precios, productos o el WhatsApp de destino, se edita UNA sola vez aquí. */
 
 const VENDEDORA = {
-  nombre: 'Laura Stehli',
-  whatsapp: '5493875274250' // formato internacional: 54 9 + característica + número, sin espacios
+  nombre: 'Enrique Stehli',
+  whatsapp: '5493985397525' // formato internacional: 54 9 + característica + número, sin espacios
 };
 
 /* ===== PREVENTISTAS =====
