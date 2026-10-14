@@ -65,8 +65,31 @@ function render(){
     ${PRODUCTOS.map((p,i) => {
       if (p.categoria !== c) return '';
       if (porKilo(p)) elegida[i] = '1kg';
-      return `
+      if (p.sabores) return `
       ${p.nombre === 'Tira de condimentos' ? '<div id="tiras" style="scroll-margin-top:60px"></div>' : ''}
+      <div class="item sabor-item" id="item-${i}">
+        <div class="info">
+          <strong>${p.nombre}</strong>
+          <small>${p.formato} · ${plata(p.precio)} c/u</small>
+          <details class="sabores">
+            <summary>Elegir sabores</summary>
+            <div class="sabor-list">
+              ${p.sabores.map((s,si) => `
+                <div class="sabor-row">
+                  <span>${s}</span>
+                  <div class="qty mini">
+                    <button onclick="cambiarSabor(${i},${si},-1)" aria-label="Quitar">−</button>
+                    <span id="qs-${i}-${si}">0</span>
+                    <button onclick="cambiarSabor(${i},${si},1)" aria-label="Agregar">+</button>
+                  </div>
+                </div>`).join('')}
+            </div>
+          </details>
+          <div class="sumado" id="sum-${i}"></div>
+          ${p.nota ? `<p class="nota-item">${p.nota}</p>` : ''}
+        </div>
+      </div>`;
+      return `
       <div class="item" id="item-${i}">
         <div class="qty">
           <button onclick="cambiar(${i},-1)" aria-label="Quitar">−</button>
@@ -79,8 +102,6 @@ function render(){
           ${porKilo(p) ? `<div class="chips" id="chips-${i}">${PRESENTACIONES.map(x =>
             `<button class="chip${x.id === '1kg' ? ' on' : ''}" data-p="${x.id}" onclick="elegir(${i},'${x.id}')">${x.etiqueta}</button>`).join('')}</div>
             <div class="sumado" id="sum-${i}"></div>` : ''}
-          ${p.sabores ? `<details class="sabores"><summary>Ver sabores</summary><p>${p.sabores.join(', ')}</p></details>` : ''}
-          ${p.nota ? `<p class="nota-item">${p.nota}</p>` : ''}
         </div>
         <div class="precio" id="pr-${i}">${plata(precioDe(i, elegida[i]))}</div>
       </div>`;
@@ -115,26 +136,59 @@ function pintarItem(i){
     : '';
 }
 
+function claveSabor(i, si){ return i + '|@' + si; }
+
+function cambiarSabor(i, si, d){
+  const k = claveSabor(i, si);
+  carrito[k] = Math.max(0, (carrito[k] || 0) + d);
+  if (!carrito[k]) delete carrito[k];
+  pintarSaborItem(i);
+  actualizar();
+}
+
+function pintarSaborItem(i){
+  const p = PRODUCTOS[i];
+  p.sabores.forEach((s, si) => {
+    $('qs-' + i + '-' + si).textContent = carrito[claveSabor(i, si)] || 0;
+  });
+  const elegidos = p.sabores.map((s, si) => ({ s, qty: carrito[claveSabor(i, si)] || 0 })).filter(e => e.qty > 0);
+  $('item-' + i).classList.toggle('activo', elegidos.length > 0);
+  const sum = $('sum-' + i);
+  if (sum) sum.textContent = elegidos.length
+    ? 'En el pedido: ' + elegidos.map(e => e.qty + ' x ' + e.s).join(' · ')
+    : '';
+}
+
+function infoDeClave(k){
+  const [iStr, variant] = k.split('|');
+  const i = +iStr;
+  if (variant && variant[0] === '@') {
+    const sabor = PRODUCTOS[i].sabores[+variant.slice(1)];
+    return { nombre: `${PRODUCTOS[i].nombre} - ${sabor}`, precio: PRODUCTOS[i].precio };
+  }
+  return { nombre: `${PRODUCTOS[i].nombre} (${etiquetaDe(i, variant)})`, precio: precioDe(i, variant) };
+}
+
 function actualizar(){
   const ks = Object.keys(carrito);
   const cant = ks.reduce((a,k) => a + carrito[k], 0);
-  const total = ks.reduce((a,k) => { const [i,pr] = k.split('|'); return a + carrito[k] * precioDe(+i, pr); }, 0);
+  const total = ks.reduce((a,k) => a + carrito[k] * infoDeClave(k).precio, 0);
   $('cuenta').textContent = cant + (cant === 1 ? ' producto' : ' productos');
   $('total').textContent = plata(total);
   $('barra').classList.toggle('vacia', cant === 0);
 
   const lineas = ks.map(k => {
-    const [i,pr] = k.split('|');
-    return `• ${carrito[k]} x ${PRODUCTOS[i].nombre} (${etiquetaDe(+i, pr)}) — ${plata(carrito[k] * precioDe(+i, pr))}`;
+    const info = infoDeClave(k);
+    return `• ${carrito[k]} x ${info.nombre} — ${plata(carrito[k] * info.precio)}`;
   }).join('\n');
   const msg = `*Pedido Especias Decor*\n\nHola ${CONTACTO.nombre}, quiero hacer este pedido:\n\n${lineas}\n\n*Total: ${plata(total)}*\n\nGracias.`;
   $('pedir').href = `https://wa.me/${CONTACTO.whatsapp}?text=${encodeURIComponent(msg)}`;
 }
 
 $('vaciar').onclick = () => {
-  const items = new Set(Object.keys(carrito).map(k => k.split('|')[0]));
+  const items = new Set(Object.keys(carrito).map(k => +k.split('|')[0]));
   Object.keys(carrito).forEach(k => delete carrito[k]);
-  items.forEach(i => pintarItem(+i));
+  items.forEach(i => PRODUCTOS[i].sabores ? pintarSaborItem(i) : pintarItem(i));
   actualizar();
 };
 

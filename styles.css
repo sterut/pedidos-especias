@@ -46,6 +46,12 @@ h2{font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:800;font-s
 .sabores summary::after{content:' ▾'}
 .sabores[open] summary::after{content:' ▴'}
 .sabores p{margin:6px 0 0;color:var(--muted);line-height:1.5}
+.item.sabor-item{display:block}
+.sabor-list{margin-top:10px}
+.sabor-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid var(--line)}
+.sabor-row:last-child{border-bottom:none}
+.qty.mini button{width:26px;height:26px;font-size:15px}
+.qty.mini span{min-width:16px}
 .nota-item{font-size:12px;color:var(--muted);margin-top:8px;font-style:italic;line-height:1.4}
 .item.activo{border-color:var(--curcuma);box-shadow:inset 4px 0 0 var(--curcuma)}
 .nota{font-size:13px;color:var(--muted);margin-top:24px}
