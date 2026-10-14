@@ -81,7 +81,7 @@ function render(){
             <div class="sabor-list">
               ${p.sabores.map((s,si) => `
                 <div class="sabor-row">
-                  <span>${s}</span>
+                  <span>${typeof s === 'string' ? s : s.nombre}${typeof s === 'object' && s.confirmar ? ' <span class="tag-confirmar">(a confirmar)</span>' : ''}</span>
                   <div class="qty mini">
                     <button onclick="cambiarSabor(${i},${si},-1)" aria-label="Quitar">−</button>
                     <span id="qs-${i}-${si}">0</span>
@@ -157,11 +157,11 @@ function pintarSaborItem(i){
   p.sabores.forEach((s, si) => {
     $('qs-' + i + '-' + si).textContent = carrito[claveSabor(i, si)] || 0;
   });
-  const elegidos = p.sabores.map((s, si) => ({ s, qty: carrito[claveSabor(i, si)] || 0 })).filter(e => e.qty > 0);
+  const elegidos = p.sabores.map((s, si) => ({ nombre: typeof s === 'string' ? s : s.nombre, qty: carrito[claveSabor(i, si)] || 0 })).filter(e => e.qty > 0);
   $('item-' + i).classList.toggle('activo', elegidos.length > 0);
   const sum = $('sum-' + i);
   if (sum) sum.textContent = elegidos.length
-    ? 'En el pedido: ' + elegidos.map(e => e.qty + ' x ' + e.s).join(' · ')
+    ? 'En el pedido: ' + elegidos.map(e => e.qty + ' x ' + e.nombre).join(' · ')
     : '';
 }
 
@@ -169,10 +169,12 @@ function infoDeClave(k){
   const [iStr, variant] = k.split('|');
   const i = +iStr;
   if (variant && variant[0] === '@') {
-    const sabor = PRODUCTOS[i].sabores[+variant.slice(1)];
-    return { nombre: `${PRODUCTOS[i].nombre} - ${sabor}`, precio: PRODUCTOS[i].precio };
+    const sab = PRODUCTOS[i].sabores[+variant.slice(1)];
+    const nombre = typeof sab === 'string' ? sab : sab.nombre;
+    const confirmar = typeof sab === 'object' && sab.confirmar;
+    return { nombre: `${PRODUCTOS[i].nombre} - ${nombre}`, precio: confirmar ? 0 : PRODUCTOS[i].precio, confirmar };
   }
-  return { nombre: `${PRODUCTOS[i].nombre} (${etiquetaDe(i, variant)})`, precio: precioDe(i, variant) };
+  return { nombre: `${PRODUCTOS[i].nombre} (${etiquetaDe(i, variant)})`, precio: precioDe(i, variant), confirmar: false };
 }
 
 function actualizar(){
@@ -185,7 +187,8 @@ function actualizar(){
 
   const lineas = ks.map(k => {
     const info = infoDeClave(k);
-    return `• ${carrito[k]} x ${info.nombre} — ${plata(carrito[k] * info.precio)}`;
+    const precioTxt = info.confirmar ? 'precio a confirmar' : plata(carrito[k] * info.precio);
+    return `• ${carrito[k]} x ${info.nombre} — ${precioTxt}`;
   }).join('\n');
   const preventista = $('preventista').value;
   const cliente = $('cliente').value.trim();
